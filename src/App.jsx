@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Search, User, Plus, Zap, Sun, Moon, Camera, ExternalLink, CheckCircle, Globe, Link2, Edit } from 'lucide-react';
+import { Home, Search, User, Plus, Zap, Sun, Moon, Camera, ExternalLink, CheckCircle, Globe, Link2, Edit, AlertTriangle, X } from 'lucide-react';
+import myCustomLogo from './assets/logo.png';
 
 // Import Data
 import { currentUser, initialPosts, mockUsers } from './data/mockData';
@@ -22,6 +23,16 @@ export default function App() {
   const [isPosting, setIsPosting] = useState(false);
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostText, setNewPostText] = useState('');
+  
+  const [showWarning, setShowWarning] = useState(true);
+  useEffect(() => {
+    if (showWarning) {
+      const timer = setTimeout(() => {
+        setShowWarning(false);
+      }, 4000); // 4000ms = 4 detik
+      return () => clearTimeout(timer); // Bersihkan timer untuk mencegah kebocoran memori
+    }
+  }, [showWarning]);
 
   // States for Features (Dark Mode & Workspace & Profile)
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -97,11 +108,14 @@ export default function App() {
         {activeTab !== 'workspace' && (
           <header className="fixed top-0 left-0 right-0 bg-white dark:bg-[#0f131f] border-b border-gray-100 dark:border-gray-800 px-4 py-3 z-50 flex justify-between items-center transition-colors">
             <div className="flex items-center gap-2">
-              <div className="bg-indigo-600 dark:bg-indigo-500 p-1.5 rounded-lg shadow-sm">
-                <Zap size={20} className="text-white" />
-              </div>
-              <h1 className="font-extrabold text-gray-900 dark:text-white tracking-tight" style={{ fontSize: '18px' }}>Idea<span className="text-indigo-600 dark:text-indigo-400">Bridge</span></h1>
-            </div>
+            {/* Ini adalah tag gambar yang menggantikan ikon sebelumnya */}
+            <img 
+              src={myCustomLogo} 
+              alt="Logo IdeaBridge" 
+              className="w-8 h-8 object-cover rounded-lg shadow-sm" 
+            />
+            <h1 className="font-extrabold text-gray-900 dark:text-white tracking-tight" style={{ fontSize: '18px' }}>Idea<span className="text-indigo-600 dark:text-indigo-400">Bridge</span></h1>
+          </div>
 
             {/* Desktop Tab Navigation */}
             <div className="hidden lg:flex items-center gap-6">
@@ -325,6 +339,50 @@ export default function App() {
           </div>
         </main>
 
+        {/* Peringatan Dummy Data Modal */}
+        {showWarning && (
+          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+            
+            {/* Sisipkan custom CSS animation khusus untuk garis loading */}
+            <style>{`
+              @keyframes shrink-bar {
+                from { width: 100%; }
+                to { width: 0%; }
+              }
+            `}</style>
+            
+            {/* Container perlu ditambah 'relative' dan 'overflow-hidden' agar garis melengkung rapi */}
+            <div className="relative overflow-hidden bg-white dark:bg-[#0f131f] rounded-2xl w-full max-w-md shadow-2xl p-10 flex flex-col items-center text-center transform transition-all duration-300 border border-gray-100 dark:border-gray-800">
+              
+              {/* Garis Loading di Atas */}
+              <div 
+                className="absolute top-0 left-0 h-1.5 bg-amber-500" 
+                style={{ animation: 'shrink-bar 4s linear forwards' }}
+              ></div>
+
+              {/* Tombol Close (X) Pojok Kanan Atas */}
+              <button 
+                onClick={() => setShowWarning(false)}
+                className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <X size={22} strokeWidth={2.5} />
+              </button>
+              
+              <div className="w-24 h-24 bg-amber-50 dark:bg-amber-900/20 rounded-full flex items-center justify-center mb-6 shadow-sm mt-2">
+                <AlertTriangle size={48} className="text-amber-500" strokeWidth={2.5} />
+              </div>
+              
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4 select-none" style={{ fontSize: '20px' }}>
+                Peringatan
+              </h3>
+              
+              <p className="text-gray-600 dark:text-gray-300 font-medium leading-relaxed px-4" style={{ fontSize: '15px' }}>
+                Website ini masih menggunakan data dummy karena ternyata ada masalah di backend.
+              </p>
+              
+            </div>
+          </div>
+        )}
         {/* Edit Profile Modal */}
         {isEditingProfile && (
           <EditProfileModal

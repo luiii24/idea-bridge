@@ -218,7 +218,7 @@ export default function App() {
           <header className="bg-white dark:bg-[#0f131f] border-b border-gray-100 dark:border-gray-800 px-4 py-3 sticky top-0 z-10 flex justify-between items-center transition-colors">
             <div className="flex items-center gap-2">
               <div className="bg-indigo-600 dark:bg-indigo-500 p-1.5 rounded-lg shadow-sm">
-                <Zap size={20} className="text-white" />
+                
               </div>
               <h1 className="text-xl font-extrabold text-gray-900 dark:text-white tracking-tight">Idea<span className="text-indigo-600 dark:text-indigo-400">Bridge</span></h1>
             </div>
