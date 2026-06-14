@@ -346,14 +346,6 @@ export default function App() {
                   </div>
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white" style={{ fontSize: '18px' }}>{userProfile.name}</h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400" style={{ fontSize: '14px' }}>@{userProfile.handle}</p>
-                  <div className="mt-3 inline-block">
-                     <span className={`text-sm px-3 py-1 rounded-full font-bold shadow-sm border
-                        ${userProfile.role === 'Ideator' ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 text-amber-700 dark:text-amber-400' : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 text-blue-700 dark:text-blue-400'}`}
-                        style={{ fontSize: '14px' }}
-                      >
-                        {userProfile.role === 'Ideator' ? '💡 Punya Ide' : '🛠️ Eksekutor'}
-                      </span>
-                  </div>
                   <p className="text-gray-700 dark:text-gray-300 text-sm mt-4 px-4" style={{ fontSize: '14px' }}>{userProfile.bio}</p>
                 
                   <div className="mt-4 flex flex-wrap justify-center gap-2">
