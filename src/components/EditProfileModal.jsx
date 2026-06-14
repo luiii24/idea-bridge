@@ -15,8 +15,8 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
     handle: currentUser.handle,
     bio: currentUser.bio,
     skills: [...currentUser.skills],
-    avatar: null,
-    avatarPreview: null
+    avatar: currentUser.avatar,
+    avatarPreview: currentUser.avatar
   });
 
   const [socialLinks, setSocialLinks] = useState(currentUser.portfolio || {});
@@ -102,13 +102,22 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
           {/* Avatar Upload */}
           <div className="flex flex-col items-center">
             <div className="relative">
-              <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-3xl text-white font-bold shadow-lg">
-                {formData.avatarPreview ? (
-                  <img src={formData.avatarPreview} alt="preview" className="w-full h-full rounded-full object-cover" />
-                ) : (
-                  formData.name.charAt(0)
-                )}
-              </div>
+              <div 
+                      className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-3xl text-white font-bold shadow-lg border-4 border-white dark:border-gray-800 overflow-hidden"
+                      style={{ borderRadius: '50%' }}
+                    >
+                      {/* Logika Cek Gambar */}
+                      {formData.avatarPreview || formData.avatar ? (
+                        <img 
+                          src={formData.avatarPreview || formData.avatar} 
+                          alt="Profil" 
+                          className="w-full h-full object-cover rounded-full"
+                          style={{ borderRadius: '50%' }}
+                        />
+                      ) : (
+                        formData.name.charAt(0)
+                      )}
+                    </div>
               <label className="absolute bottom-0 right-0 bg-indigo-600 dark:bg-indigo-500 p-2 rounded-full cursor-pointer hover:bg-indigo-700 dark:hover:bg-indigo-600 transition shadow-lg">
                 <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
                 <Plus size={16} className="text-white" />
@@ -133,7 +142,7 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
 
           {/* Handle */}
           <div>
-            <label className="block font-medium text-gray-900 dark:text-white mb-2" style={{ fontSize: '14px' }}>Handle (@)</label>
+            <label className="block font-medium text-gray-900 dark:text-white mb-2" style={{ fontSize: '14px' }}>username (@)</label>
             <input
               type="text"
               name="handle"
