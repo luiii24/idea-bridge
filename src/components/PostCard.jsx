@@ -18,7 +18,7 @@ export default function PostCard({ post, handleVote, openWorkspace }) {
         <div className="flex-1">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-gray-900 dark:text-white">{post.author}</span>
+              <span className="font-bold text-gray-900 dark:text-white">{post.title}</span>
               <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline">{post.handle}</span>
             </div>
             <div className="flex gap-1.5 flex-wrap justify-end">

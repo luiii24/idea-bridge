@@ -20,6 +20,7 @@ export default function App() {
 
   // States for New Post
   const [isPosting, setIsPosting] = useState(false);
+  const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostText, setNewPostText] = useState('');
 
   // States for Features (Dark Mode & Workspace & Profile)
@@ -52,6 +53,7 @@ export default function App() {
     if (!newPostText.trim()) return;
     const newPost = {
       id: Date.now(),
+      title: currentUser.title,
       author: currentUser.name,
       handle: currentUser.handle,
       role: currentUser.role,
@@ -62,6 +64,7 @@ export default function App() {
       bridged: 0
     };
     setPosts([newPost, ...posts]);
+    setNewPostTitle('');
     setNewPostText('');
     setIsPosting(false);
   };
@@ -148,6 +151,14 @@ export default function App() {
             <div className="animate-fade-in">
               {isPosting && (
                 <div className="p-4 bg-indigo-50/50 dark:bg-[#151a26] border-b dark:border-gray-800">
+                  <textarea 
+                    type="text"
+                    value={newPostTitle}
+                    onChange={(e) => setNewPostTitle(e.target.value)}
+                    placeholder="Judul Ide atau Proyekmu..."
+                    className="w-full p-3 bg-white dark:bg-[#0f131f] text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-bold mb-3"
+                    style={{ fontSize: '15px' }}
+                  />
                   <textarea 
                     value={newPostText}
                     onChange={(e) => setNewPostText(e.target.value)}

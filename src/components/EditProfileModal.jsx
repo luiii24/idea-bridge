@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Plus, Trash2, Link2 } from 'lucide-react';
+import { X, Plus, Trash2, Link2, ChevronDown } from 'lucide-react';
 
 const socialIconMap = {
   github: 'GitHub',
@@ -23,6 +23,13 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
   const [socialLinks, setSocialLinks] = useState(currentUser.portfolio || {});
   const [newSkill, setNewSkill] = useState('');
   const [errors, setErrors] = useState({});
+  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+
+  // Opsi role (bisa kamu tambah/ubah sendiri)
+  const roleOptions = [
+    { value: 'Ideator', label: '💡 Punya Ide (Ideator)' },
+    { value: 'Creator', label: '🛠️ Eksekutor (Creator)' }
+  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -88,7 +95,7 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
   const socialKeys = ['github', 'linkedin', 'website', 'twitter', 'instagram'];
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 bg-black/50 z-60 flex items-center justify-center p-4 backdrop-blur-sm">
       <div className="bg-white dark:bg-[#0f131f] rounded-2xl max-h-[90vh] overflow-y-auto w-full max-w-md shadow-2xl">
         {/* Header */}
         <div className="sticky top-0 bg-white dark:bg-[#0f131f] border-b dark:border-gray-800 px-6 py-4 flex justify-between items-center">
@@ -160,18 +167,47 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
           </div>
 
           {/* Role */}
-          <div>
+<div className="relative">
             <label className="block font-medium text-gray-900 dark:text-white mb-2" style={{ fontSize: '14px' }}>Role</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 rounded-lg bg-gray-100 dark:bg-[#1a1f2e] text-gray-900 dark:text-white border border-transparent focus:ring-2 focus:ring-indigo-500 outline-none transition"
+            
+            {/* Tombol Dropdown */}
+            <div 
+              onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
+              className="w-full px-3 py-2 rounded-lg bg-gray-100 dark:bg-[#1a1f2e] text-gray-900 dark:text-white border border-transparent focus-within:ring-2 focus-within:ring-indigo-500 outline-none transition flex justify-between items-center cursor-pointer"
               style={{ fontSize: '14px' }}
             >
-              <option value="Ideator">💡 Punya Ide</option>
-              <option value="Creator">🛠️ Eksekutor</option>
-            </select>
+              <span className="select-none">
+                {roleOptions.find(r => r.value === formData.role)?.label || 'Pilih Role'}
+              </span>
+              <ChevronDown 
+                size={16} 
+                className={`text-gray-500 transition-transform duration-200 ${isRoleDropdownOpen ? 'rotate-180' : ''}`} 
+              />
+            </div>
+
+            {/* Menu List Dropdown */}
+            {isRoleDropdownOpen && (
+              <div className="absolute z-10 w-full mt-2 bg-white dark:bg-[#1a1f2e] border border-gray-100 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden animate-fade-in">
+                {roleOptions.map((option) => (
+                  <div
+                    key={option.value}
+                    onClick={() => {
+                      // Update formData manual karena kita tidak pakai <select> lagi
+                      setFormData(prev => ({ ...prev, role: option.value }));
+                      setIsRoleDropdownOpen(false); // Tutup dropdown setelah memilih
+                    }}
+                    className={`px-4 py-2.5 cursor-pointer transition-colors flex items-center select-none
+                      ${formData.role === option.value 
+                        ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium' 
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#252d3d]'
+                      }`}
+                    style={{ fontSize: '14px' }}
+                  >
+                    {option.label}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Skills */}
@@ -188,11 +224,11 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
                 style={{ fontSize: '14px' }}
               />
               <button
-                onClick={handleAddSkill}
-                className="px-4 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition font-medium"
-                style={{ fontSize: '14px' }}
+              onClick={handleAddSkill}
+              className="flex items-center justify-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+              title="Tambah Skill"
               >
-                +
+              <Plus size={18} strokeWidth={2.5} />
               </button>
             </div>
             <div className="flex flex-wrap gap-2">

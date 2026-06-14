@@ -17,6 +17,7 @@ export const currentUser = {
 export const initialPosts = [
   {
     id: 1,
+    title: "Aplikasi Pengingat Obat Virtual Pet", // Tambahan judul
     author: "Budi Santoso",
     handle: "@budisans",
     role: "Ideator",
@@ -28,6 +29,7 @@ export const initialPosts = [
   },
   {
     id: 2,
+    title: "Platform Solusi Digital UMKM Lokal", // Tambahan judul
     author: "Siti Aminah",
     handle: "@siticode",
     role: "Creator",
@@ -39,6 +41,7 @@ export const initialPosts = [
   },
   {
     id: 3,
+    title: "Text-to-Speech Logat Daerah Nusantara", // Tambahan judul
     author: "Rangga Pratama",
     handle: "@ranggap",
     role: "Ideator",
