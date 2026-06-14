@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Home, Search, User, Plus, Zap, Sun, Moon, Camera, ExternalLink, CheckCircle, Globe, Link2, Edit } from 'lucide-react';
 
 // Import Data
@@ -14,7 +14,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [posts, setPosts] = useState(initialPosts);
   const [userProfile, setUserProfile] = useState(currentUser);
-  
   // States for Search Tab
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFilter, setSearchFilter] = useState('ideas');
@@ -25,6 +24,13 @@ export default function App() {
 
   // States for Features (Dark Mode & Workspace & Profile)
   const [isDarkMode, setIsDarkMode] = useState(false);
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
   const [activeProject, setActiveProject] = useState(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
@@ -226,7 +232,7 @@ export default function App() {
                       className="absolute bottom-0 right-0 flex items-center gap-2 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition font-medium shadow-md"
                       style={{ fontSize: '14px' }}
                     >
-                      <Edit size={16} />
+                      <Edit size={16} strokeWidth={3.5} />
                     </button>
                   </div>
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white" style={{ fontSize: '18px' }}>{userProfile.name}</h2>
