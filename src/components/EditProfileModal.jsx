@@ -14,7 +14,6 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
     name: currentUser.name,
     handle: currentUser.handle,
     bio: currentUser.bio,
-    role: currentUser.role,
     skills: [...currentUser.skills],
     avatar: null,
     avatarPreview: null
@@ -23,13 +22,6 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
   const [socialLinks, setSocialLinks] = useState(currentUser.portfolio || {});
   const [newSkill, setNewSkill] = useState('');
   const [errors, setErrors] = useState({});
-  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
-
-  // Opsi role (bisa kamu tambah/ubah sendiri)
-  const roleOptions = [
-    { value: 'Ideator', label: '💡 Punya Ide (Ideator)' },
-    { value: 'Creator', label: '🛠️ Eksekutor (Creator)' }
-  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -164,50 +156,6 @@ export default function EditProfileModal({ currentUser, onSave, onClose }) {
               className="w-full px-3 py-2 rounded-lg bg-gray-100 dark:bg-[#1a1f2e] text-gray-900 dark:text-white border border-transparent focus:ring-2 focus:ring-indigo-500 outline-none transition resize-none"
               style={{ fontSize: '14px' }}
             />
-          </div>
-
-          {/* Role */}
-<div className="relative">
-            <label className="block font-medium text-gray-900 dark:text-white mb-2" style={{ fontSize: '14px' }}>Role</label>
-            
-            {/* Tombol Dropdown */}
-            <div 
-              onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-              className="w-full px-3 py-2 rounded-lg bg-gray-100 dark:bg-[#1a1f2e] text-gray-900 dark:text-white border border-transparent focus-within:ring-2 focus-within:ring-indigo-500 outline-none transition flex justify-between items-center cursor-pointer"
-              style={{ fontSize: '14px' }}
-            >
-              <span className="select-none">
-                {roleOptions.find(r => r.value === formData.role)?.label || 'Pilih Role'}
-              </span>
-              <ChevronDown 
-                size={16} 
-                className={`text-gray-500 transition-transform duration-200 ${isRoleDropdownOpen ? 'rotate-180' : ''}`} 
-              />
-            </div>
-
-            {/* Menu List Dropdown */}
-            {isRoleDropdownOpen && (
-              <div className="absolute z-10 w-full mt-2 bg-white dark:bg-[#1a1f2e] border border-gray-100 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden animate-fade-in">
-                {roleOptions.map((option) => (
-                  <div
-                    key={option.value}
-                    onClick={() => {
-                      // Update formData manual karena kita tidak pakai <select> lagi
-                      setFormData(prev => ({ ...prev, role: option.value }));
-                      setIsRoleDropdownOpen(false); // Tutup dropdown setelah memilih
-                    }}
-                    className={`px-4 py-2.5 cursor-pointer transition-colors flex items-center select-none
-                      ${formData.role === option.value 
-                        ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium' 
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#252d3d]'
-                      }`}
-                    style={{ fontSize: '14px' }}
-                  >
-                    {option.label}
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Skills */}

@@ -1,7 +1,14 @@
 import React from 'react';
-import { ThumbsUp, Handshake } from 'lucide-react';
+import { ThumbsUp, Handshake, Clock } from 'lucide-react';
 
 export default function PostCard({ post, handleVote, openWorkspace }) {
+
+  const formatTime = (rawTimestamp) => {
+    const dateObj = new Date(rawTimestamp);
+    const dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    const timeStr = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    return `${dateStr}, ${timeStr}`;
+  };
   // Helper status colors
   const getStatusColor = (status) => {
     switch(status) {
@@ -21,17 +28,11 @@ export default function PostCard({ post, handleVote, openWorkspace }) {
               <span className="font-bold text-gray-900 dark:text-white">{post.title}</span>
               <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline">{post.handle}</span>
             </div>
-            <div className="flex gap-1.5 flex-wrap justify-end">
-              {post.status && (
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${getStatusColor(post.status)}`}>
-                  {post.status.toUpperCase()}
-                </span>
-              )}
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1 border
-                ${post.role === 'Ideator' ? 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800/50 dark:text-amber-400' : 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800/50 dark:text-blue-400'}`}>
-                {post.role === 'Ideator' ? '💡 Ideator' : '🛠️ Creator'}
-              </span>
-            </div>
+            <div className="flex items-center gap-1 text-gray-400 dark:text-gray-500 ml-2 flex-shrink-0 mt-0.5">
+                <Clock size={12} />
+                {/* Panggil fungsi formatTime untuk menerjemahkan angka raw */}
+                <span className="text-[11px] font-medium">{formatTime(post.timestamp)}</span>
+              </div>
           </div>
           
           <p className="text-gray-800 dark:text-gray-200 text-sm leading-relaxed mb-3">
