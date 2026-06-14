@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Search, User, Plus, Zap, Sun, Moon, Camera, MessageSquare, ExternalLink, CheckCircle, Globe, Link2, Edit, AlertTriangle, X } from 'lucide-react';
+import { Home, Search, User, Power, Plus, Zap, Sun, Moon, Camera, MessageSquare, ExternalLink, CheckCircle, Globe, Link2, Edit, AlertTriangle, X } from 'lucide-react';
 import myCustomLogo from './assets/logo.png';
 
 // Import Data
@@ -12,6 +12,10 @@ import WorkspacePanel from './components/WorkspacePanel';
 import EditProfileModal from './components/EditProfileModal';
 
 export default function App() {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authType, setAuthType] = useState('login'); // Menyimpan status 'login' atau 'signup'
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [posts, setPosts] = useState(initialPosts);
   const [userProfile, setUserProfile] = useState(currentUser);
@@ -124,7 +128,6 @@ export default function App() {
         {activeTab !== 'workspace' && (
           <header className="fixed top-0 left-0 right-0 bg-white dark:bg-[#0f131f] border-b border-gray-100 dark:border-gray-800 px-4 py-3 z-50 flex justify-between items-center transition-colors">
             <div className="flex items-center gap-2">
-            {/* Ini adalah tag gambar yang menggantikan ikon sebelumnya */}
             <img 
               src={myCustomLogo} 
               alt="Logo IdeaBridge" 
@@ -162,7 +165,15 @@ export default function App() {
               <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#1a1f2e] rounded-full transition">
                 {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              
+              {isLoggedIn && (
+                <button 
+                  onClick={() => setIsLogoutModalOpen(true)} // <-- Buka modal konfirmasi
+                  className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-full border border-transparent hover:border-red-100 dark:hover:border-red-800/50"
+                  title="Log Out"
+                >
+                  <Power size={20} strokeWidth={2.5} />
+                </button>
+              )}
               {activeTab === 'home' && (
                <button 
                 onClick={() => setIsPosting(!isPosting)} 
@@ -314,115 +325,155 @@ export default function App() {
             </div>
           )}
 
-          {/* TAB 3: PROFIL */}
-          {activeTab === 'profile' && (
-            <div className="animate-tab-swap animate-tab-swap bg-gray-50 dark:bg-[#0f131f] min-h-full">
-              <div className="bg-white dark:bg-[#1a1f2e] p-6 border-b dark:border-gray-800">
-                <div className="text-center mb-4">
-                  <div className="relative inline-block mb-4">
-                    <div 
-                      className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-3xl text-white font-bold shadow-lg border-4 border-white dark:border-gray-800 overflow-hidden"
-                      style={{ borderRadius: '50%' }}
-                    >
-                      {/* Logika Cek Gambar */}
-                      {userProfile.avatarPreview || userProfile.avatar ? (
-                        <img 
-                          src={userProfile.avatarPreview || userProfile.avatar} 
-                          alt="Profil" 
-                          className="w-full h-full object-cover rounded-full"
-                          style={{ borderRadius: '50%' }}
-                        />
-                      ) : (
-                        userProfile.name.charAt(0)
+{/* ========================================================= */}
+        {/* TAB 3: PROFIL */}
+        {/* ========================================================= */}
+        {activeTab === 'profile' && (
+          <div className="animate-tab-swap pb-24 max-w-2xl mx-auto px-4 mt-4">
+            {!isLoggedIn ? (
+              /* Tampilan Profil Kosong Saat Belum / Telah Log Out */
+              <div className="flex flex-col items-center justify-center min-h-[50vh] text-center p-8 bg-white dark:bg-[#1a1f2e] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+                <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-4 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/40">
+                  <User size={32} strokeWidth={2} />
+                </div>
+                
+                <h2 className="text-lg font-extrabold text-gray-900 dark:text-white mb-1">
+                  Profil Anda Kosong
+                </h2>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-6 max-w-xs leading-relaxed">
+                  Masuk atau buat akun terlebih dahulu untuk melihat profil, mengatur riwayat ruang kerja, dan berkolaborasi.
+                </p>
+                
+                <div className="flex gap-3 w-full max-w-xs justify-center">
+                  <div className="flex gap-3 w-full max-w-xs justify-center">
+                  <button 
+                    onClick={() => { 
+                      setAuthType('login'); 
+                      setIsAuthModalOpen(true); 
+                    }}
+                    className="flex-1 py-3.5 bg-indigo-600 dark:bg-indigo-500 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 dark:hover:bg-indigo-600 transition shadow-sm"
+                  >
+                    Log In
+                  </button>
+                  <button 
+                    onClick={() => { 
+                      setAuthType('signup'); 
+                      setIsAuthModalOpen(true); 
+                    }}
+                    className="flex-1 py-3.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold rounded-xl text-xs hover:bg-gray-50 dark:hover:bg-[#23293b] transition"
+                  >
+                    Create Account
+                  </button>
+                </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="bg-white dark:bg-[#1a1f2e] p-6 border-b dark:border-gray-800 rounded-2xl shadow-sm">
+                  <div className="text-center mb-4">
+                    <div className="relative inline-block mb-4">
+                      <div 
+                        className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-3xl text-white font-bold shadow-lg border-4 border-white dark:border-gray-800 overflow-hidden"
+                        style={{ borderRadius: '50%' }}
+                      >
+                        {userProfile.avatarPreview || userProfile.avatar ? (
+                          <img 
+                            src={userProfile.avatarPreview || userProfile.avatar} 
+                            alt="Profil" 
+                            className="w-full h-full object-cover rounded-full"
+                            style={{ borderRadius: '50%' }}
+                          />
+                        ) : (
+                          userProfile.name.charAt(0)
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setIsEditingProfile(true)}
+                        className="absolute bottom-0 right-0 flex items-center gap-2 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition font-medium shadow-md"
+                        style={{ fontSize: '14px' }}
+                      >
+                        <Edit size={16} strokeWidth={3.5} />
+                      </button>
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white" style={{ fontSize: '18px' }}>{userProfile.name}</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400" style={{ fontSize: '14px' }}>@{userProfile.handle}</p>
+                    <p className="text-gray-700 dark:text-gray-300 text-sm mt-4 px-4" style={{ fontSize: '14px' }}>{userProfile.bio}</p>
+                  
+                    <div className="mt-4 flex flex-wrap justify-center gap-2">
+                      {userProfile.skills.map((skill, idx) => (
+                        <span key={idx} className="bg-gray-100 dark:bg-[#0f131f] text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full text-xs font-medium border dark:border-gray-700" style={{ fontSize: '12px' }}>
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="mt-5 flex justify-center gap-4 flex-wrap">
+                      {userProfile.portfolio?.github && (
+                        <a href={userProfile.portfolio.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
+                          <Link2 size={18} /> GitHub
+                        </a>
+                      )}
+                      {userProfile.portfolio?.linkedin && (
+                        <a href={userProfile.portfolio.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
+                          <Link2 size={18} /> LinkedIn
+                        </a>
+                      )}
+                      {userProfile.portfolio?.website && (
+                        <a href={userProfile.portfolio.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
+                          <Globe size={18} /> Website
+                        </a>
+                      )}
+                      {userProfile.portfolio?.twitter && (
+                        <a href={userProfile.portfolio.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
+                          <Link2 size={18} /> Twitter
+                        </a>
+                      )}
+                      {userProfile.portfolio?.instagram && (
+                        <a href={userProfile.portfolio.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
+                          <Link2 size={18} /> Instagram
+                        </a>
                       )}
                     </div>
-                    <button
-                      onClick={() => setIsEditingProfile(true)}
-                      className="absolute bottom-0 right-0 flex items-center gap-2 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition font-medium shadow-md"
-                      style={{ fontSize: '14px' }}
-                    >
-                      <Edit size={16} strokeWidth={3.5} />
-                    </button>
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white" style={{ fontSize: '18px' }}>{userProfile.name}</h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400" style={{ fontSize: '14px' }}>@{userProfile.handle}</p>
-                  <p className="text-gray-700 dark:text-gray-300 text-sm mt-4 px-4" style={{ fontSize: '14px' }}>{userProfile.bio}</p>
-                
-                  <div className="mt-4 flex flex-wrap justify-center gap-2">
-                    {userProfile.skills.map((skill, idx) => (
-                      <span key={idx} className="bg-gray-100 dark:bg-[#0f131f] text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full text-xs font-medium border dark:border-gray-700" style={{ fontSize: '12px' }}>
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-5 flex justify-center gap-4 flex-wrap">
-                    {userProfile.portfolio?.github && (
-                      <a href={userProfile.portfolio.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
-                        <Link2 size={18} /> GitHub
-                      </a>
-                    )}
-                    {userProfile.portfolio?.linkedin && (
-                      <a href={userProfile.portfolio.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
-                        <Link2 size={18} /> LinkedIn
-                      </a>
-                    )}
-                    {userProfile.portfolio?.website && (
-                      <a href={userProfile.portfolio.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
-                        <Globe size={18} /> Website
-                      </a>
-                    )}
-                    {userProfile.portfolio?.twitter && (
-                      <a href={userProfile.portfolio.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
-                        <Link2 size={18} /> Twitter
-                      </a>
-                    )}
-                    {userProfile.portfolio?.instagram && (
-                      <a href={userProfile.portfolio.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition" style={{ fontSize: '14px' }}>
-                        <Link2 size={18} /> Instagram
-                      </a>
-                    )}
                   </div>
                 </div>
-              </div>
 
-              <div className="p-4">
-                <h3 className="font-bold text-gray-900 dark:text-white mb-3 text-sm flex items-center gap-2" style={{ fontSize: '14px' }}>
-                  <MessageSquare size={16} className="text-indigo-500" /> Riwayat Workspace
-                </h3>
-                
-                <div className="space-y-3">
-                  {/* Filter global posts: cari post yang memiliki ID kita di dalam joinedUsers-nya */}
-                  {(() => {
-                    const userWorkspaces = posts.filter(post => post.joinedUsers?.includes(userProfile.id));
-                    
-                    if (userWorkspaces.length === 0) {
-                      return <p className="text-xs text-gray-400 text-center py-4">Belum ada riwayat percakapan.</p>;
-                    }
+                <div className="p-4 bg-white dark:bg-[#1a1f2e] rounded-2xl border border-gray-100 dark:border-gray-800 mt-4 shadow-sm">
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-3 text-sm flex items-center gap-2" style={{ fontSize: '14px' }}>
+                    <span className="w-4 h-4 rounded-full bg-indigo-500 flex-shrink-0" /> Riwayat Workspace
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    {(() => {
+                      const userWorkspaces = posts.filter(post => post.joinedUsers?.includes(userProfile.id));
+                      
+                      if (userWorkspaces.length === 0) {
+                        return <p className="text-xs text-gray-400 text-center py-4">Belum ada riwayat percakapan.</p>;
+                      }
 
-                    return userWorkspaces.map(topic => (
-                      <div 
-                        key={topic.id} 
-                        onClick={() => openWorkspace(topic)}
-                        className="bg-white dark:bg-[#1a1f2e] p-4 rounded-xl border border-gray-100 dark:border-gray-800 flex justify-between items-center shadow-sm cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-gray-50 dark:hover:bg-[#202738] transition-all group"
-                      >
-                        <div className="flex flex-col min-w-0 pr-2">
-                          <span className="font-semibold text-sm text-gray-800 dark:text-gray-200 line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" style={{ fontSize: '14px' }}>
-                            {topic.title}
+                      return userWorkspaces.map(topic => (
+                        <div 
+                          key={topic.id} 
+                          onClick={() => openWorkspace(topic)}
+                          className="bg-gray-50 dark:bg-[#0f131f] p-4 rounded-xl border border-gray-100 dark:border-gray-800 flex justify-between items-center shadow-sm cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-white dark:hover:bg-[#202738] transition-all group"
+                        >
+                          <div className="flex flex-col min-w-0 pr-2">
+                            <span className="font-semibold text-sm text-gray-800 dark:text-gray-200 line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" style={{ fontSize: '14px' }}>
+                              {topic.title}
+                            </span>
+                            <span className="text-[11px] text-gray-400 mt-0.5">Oleh {topic.author}</span>
+                          </div>
+                          <span className="text-xs text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-900/30 px-2.5 py-1.5 rounded-md flex-shrink-0" style={{ fontSize: '12px' }}>
+                            Buka Chat
                           </span>
-                          <span className="text-[11px] text-gray-400 mt-0.5">Oleh {topic.author}</span>
                         </div>
-                        <span className="text-xs text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-900/30 px-2.5 py-1.5 rounded-md flex-shrink-0" style={{ fontSize: '12px' }}>
-                          Buka Chat
-                        </span>
-                      </div>
-                    ));
-                  })()}
+                      ));
+                    })()}
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
-
+              </>
+            )}
+          </div>
+        )}
           {/* TAB WORKSPACE */}
           {activeTab === 'workspace' && activeProject && (
             <WorkspacePanel 
@@ -433,7 +484,74 @@ export default function App() {
           )}
           </div>
         </main>
+          {/* MODAL POP-UP AUTH (LOGIN / SIGN UP) */}
+          {isAuthModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+              <div className="w-full max-w-md bg-white dark:bg-[#1a1f2e] rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-xl animate-scale-up relative">
+                
+                {/* Tombol Close */}
+                <button 
+                  onClick={() => setIsAuthModalOpen(false)} 
+                  className="absolute top-4 right-4 p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition"
+                >
+                  <X size={20} />
+                </button>
 
+                <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4">
+                  {authType === 'login' ? 'Log In ke IdeaBridge' : 'Buat Akun Baru'}
+                </h3>
+
+                <div className="space-y-4">
+                  {authType === 'signup' && (
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap</label>
+                      <input 
+                        type="text" 
+                        placeholder="Ahmad Lu'ay" 
+                        className="w-full p-3 bg-gray-50 dark:bg-[#0f131f] border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white outline-none transition" 
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                    <input 
+                      type="email" 
+                      placeholder="contoh@email.com" 
+                      className="w-full p-3 bg-gray-50 dark:bg-[#0f131f] border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white outline-none transition" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                    <input 
+                      type="password" 
+                      placeholder="••••••••" 
+                      className="w-full p-3 bg-gray-50 dark:bg-[#0f131f] border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white outline-none transition" 
+                    />
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => { 
+                    setIsLoggedIn(true); 
+                    setIsAuthModalOpen(false); 
+                  }} 
+                  className="w-full py-3.5 mt-6 bg-indigo-600 dark:bg-indigo-500 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 dark:hover:bg-indigo-600 transition shadow-sm"
+                >
+                  {authType === 'login' ? 'Log In Sekarang' : 'Daftar Akun'}
+                </button>
+                
+                <p className="text-[11px] text-gray-400 text-center mt-4">
+                  {authType === 'login' ? 'Belum punya akun?' : 'Sudah punya akun?'} 
+                  <span 
+                    onClick={() => setAuthType(authType === 'login' ? 'signup' : 'login')}
+                    className="text-indigo-600 dark:text-indigo-400 font-semibold cursor-pointer ml-1 hover:underline"
+                  >
+                    {authType === 'login' ? 'Buat Akun' : 'Log In'}
+                  </span>
+                </p>
+              </div>
+            </div>
+          )}
         {/* Peringatan Dummy Data Modal */}
         {showWarning && (
           <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
@@ -475,6 +593,41 @@ export default function App() {
                 Website ini masih menggunakan data dummy karena ternyata ada masalah di backend.
               </p>
               
+            </div>
+          </div>
+        )}
+        {/* MODAL KONFIRMASI LOG OUT */}
+        {isLogoutModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+            <div className="w-full max-w-sm bg-white dark:bg-[#1a1f2e] rounded-2xl p-5 border border-gray-100 dark:border-gray-800 shadow-xl animate-scale-up">
+              <div className="w-12 h-12 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle size={24} />
+              </div>
+              
+              <h3 className="text-base font-bold text-gray-900 dark:text-white text-center mb-1">
+                Keluar dari Akun?
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-6">
+                Apakah Anda yakin ingin keluar dari IdeaBridge? Riwayat workspace tidak akan hilang, tetapi Anda harus masuk kembali untuk mengaksesnya.
+              </p>
+              
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setIsLogoutModalOpen(false)} // Tombol Cancel / Batal
+                  className="flex-1 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                >
+                  Batal
+                </button>
+                <button 
+                  onClick={() => {
+                    setIsLoggedIn(false);            // Eksekusi Log Out
+                    setIsLogoutModalOpen(false);     // Tutup Modal
+                  }} 
+                  className="flex-1 py-3 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition shadow-sm"
+                >
+                  Ya, Keluar
+                </button>
+              </div>
             </div>
           </div>
         )}
