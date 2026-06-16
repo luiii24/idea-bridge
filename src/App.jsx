@@ -932,7 +932,7 @@ export default function App() {
               <button onClick={() => setShowWarning(false)} className="absolute top-4 right-4 p-1 text-gray-400 hover:bg-gray-100 rounded-full"><X size={22} strokeWidth={2.5} /></button>
               <div className="w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center mb-6 mt-2"><AlertTriangle size={48} className="text-amber-500" strokeWidth={2.5} /></div>
               <h3 className="font-bold text-gray-900 dark:text-white mb-4" style={{ fontSize: '20px' }}>Peringatan</h3>
-              <p className="text-gray-600 dark:text-gray-300 font-medium px-4" style={{ fontSize: '15px' }}>Website ini masih menggunakan data dummy karena ternyata ada masalah di backend.</p>
+              <p className="text-gray-600 dark:text-gray-300 font-medium px-4" style={{ fontSize: '15px' }}>Harap tidak membuat postingan yang mengandung unsur sara dan membuat keributan.</p>
             </div>
           </div>
         )}
